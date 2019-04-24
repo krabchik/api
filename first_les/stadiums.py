@@ -2,19 +2,22 @@ import pygame
 import requests
 import sys
 
-target = 'Спартак'
+targets = ['Спартак', 'Динамо', 'Лужники']
+coords = []
 
-response = requests.get(f'http://geocode-maps.yandex.ru/1.x/?geocode={target}&format=json')
-if response:
-    json_response = response.json()
-
-    pos = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point'][
-        'pos']
-
+for target in targets:
+    response = requests.get(f'http://geocode-maps.yandex.ru/1.x/?geocode={target}&format=json')
+    if response:
+        json_response = response.json()
+        i = 0 if target != 'Спартак' else 4
+        pos = json_response['response']['GeoObjectCollection']['featureMember'][i]['GeoObject']['Point'][
+            'pos']
+        coords.append(','.join(pos.split()))
+print(coords)
 try:
-    map_request = f"http://static-maps.yandex.ru/1.x/?ll={','.join(pos.split())}&spn=0.2,0.2&l=sat"
+    map_request = f"http://static-maps.yandex.ru/1.x/?l=sat&pt={',pm2gnm~'.join(coords)},pm2gnm"
     response = requests.get(map_request)
-    print(' '.join(pos.split()))
+    print(map_request)
 except:
     print("Запрос не удалось выполнить. Проверьте наличие сети Интернет.")
     sys.exit(1)
@@ -38,5 +41,3 @@ pygame.display.flip()
 while pygame.event.wait().type != pygame.QUIT:
     pass
 pygame.quit()
-
-# Удаляем за собой файл с изображением.
