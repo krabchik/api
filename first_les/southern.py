@@ -16,10 +16,17 @@ for i in cities:
 
     if response:
         json_response = response.json()
-        south = float(
-            json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'][
-                'Point'][
-                'pos'][1])
+        try:
+            south = \
+                json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject'][
+                    'Point'][
+                    'pos'][1]
+        except IndexError:
+            print(i, 'IndexError')
+        if south == '.':
+            print(i, '.')
+            continue
+        south = float(south)
         if float(south) > max_coords:
             southern_city = i
             max_coords = south
