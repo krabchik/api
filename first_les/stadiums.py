@@ -9,6 +9,7 @@ for target in targets:
     response = requests.get(f'http://geocode-maps.yandex.ru/1.x/?geocode={target}&format=json')
     if response:
         json_response = response.json()
+        # Дело в том, что первые 4 результата для Спартака - это реки и т.д., и только 5 - стадион
         i = 0 if target != 'Спартак' else 4
         pos = json_response['response']['GeoObjectCollection']['featureMember'][i]['GeoObject']['Point'][
             'pos']
